@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vision index</title>
+    <style>
+        .container {
+            display: flex;
+            align-items: center;
+        }
+        .half {
+            flex: 1;
+            align-items: center;
+        }
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+        }
+        #resultArea {
+            text-align: center;
+        }
+        #videoContainer {
+            width: 100%;
+            height: 300px;
+        }
+        #videoElement {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script>
+        let videoStream;
+
+        function handleClick() {
+            alert("버튼이 클릭되었습니다!");
+        }
+
+        function showResult(result) {
+            var resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = result;
+        }
+
+        function showImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    var imageElement = document.createElement("img");
+                    imageElement.setAttribute("src", e.target.result);
+                    imageElement.setAttribute("class", "image-preview");
+
+                    var imageContainer = document.getElementById("imageContainer");
+                    imageContainer.innerHTML = "";
+                    imageContainer.appendChild(imageElement);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function startWebcam() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function(stream) {
+                        var videoElement = document.getElementById("videoElement");
+                        videoElement.srcObject = stream;
+                        videoStream = stream;
+                    })
+                    .catch(function(error) {
+                        console.error("Error accessing webcam:", error);
+                    });
+            } else {
+                console.error("Webcam access not supported by browser.");
+            }
+        }
+
+        function stopWebcam() {
+            if (videoStream) {
+                videoStream.getTracks().forEach(function(track) {
+                    track.stop();
+                });
+                var videoElement = document.getElementById("videoElement");
+                videoElement.srcObject = null;
+                videoStream = null;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1 align="center">Flask for Refit_EfficientNet</h1>
+    <br>
+    <div class="container">
+        <div class="half">
+            <input type="file" name="image" accept="image/*" onchange="showImage(this)">
+            <div id="imageContainer"></div>
+            <input type="file" name="image" accept="video/*" onchange="startwebcam(this)">
+            <div id="videoStream"></div>
+        </div>
+        <div class="half">
+            <div class="result-area">
+                <h2>refit이 감정한 결과는?</h2>
+                <textarea rows="4" cols="50">
+                    1. 이것은 의류입니다.
+                    2. 의류를 분리수거하는 방법은?
+                    3. 제일 가까운 옷 정리방을 추천해드릴게요!
+                    4. 이게 지금 뭐하는 거냐
+                </textarea>
+                <div id="result"></div>
+            </div>
+        </div>
+    </div>
+    <div class="campaign-list">
+        <ul>
+            <li><img src="image1.jpg" alt="Campaign 1" width="100" height="100">
+                <h2><a href="/list1">EfficientNet 사용하러 go!</a></h2></li>
+            <li><img src="image2.jpg" alt="Campaign 2" width="100" height="100">
+                <h2><a href="/Pants.html">오늘의 캠페인 1 : 상의/하의</a></h2></li>
+            <li><img src="image3.jpg" alt="Campaign 3" width="100" height="100">
+                <h2><a href="/T-shirt.html">오늘의 캠페인 2 : 신발/속옷</a></h2></li>
+            <li><img src="image4.jpg" alt="Campaign 4" width="100" height="100">
+                <h2><a href="/Animal.html">오늘의 캠페인 3 : 장신구</a></h2></li>
+            <li><img src="image5.jpg" alt="Campaign 5" width="100" height="100">
+                <h2><a href="/list5">오늘의 캠페인 4 : 반려동물</a></h2></li>
+            <li><img src="image6.jpg" alt="Campaign 6" width="100" height="100">
+                <h2><a href="/list6">오늘의 캠페인 5 : 이불/수건류</a></h2></li>
+        </ul>
+    </div>
+</body>
+</html>
